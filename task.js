@@ -17,24 +17,36 @@ function solveEquation(a, b, c) {
 
 
 //Задание 2
-describe('Задача №2. Функция должна:', () => {
-  it('верно считать кредит: кейс #1', () => {
-    expect(calculateTotalMortgage(10, 0, 50000, 12)).toEqual(52749.53);
-  });
+function calculateTotalMortgage(percent, contribution, amount, countMonths) {
+  // Преобразуем параметры в числа
+  percent = parseFloat(percent);
+  contribution = parseFloat(contribution);
+  amount = parseFloat(amount);
+  countMonths = parseInt(countMonths, 10);
+  
+  // Проверяем, удалось ли преобразовать параметры в числа
+  if (isNaN(percent) || isNaN(contribution) || isNaN(amount) || isNaN(countMonths)) {
+    return false;
+  }
 
-  it('верно считать кредит: кейс #2', () => {
-    expect(calculateTotalMortgage(10, 1000, 50000, 12)).toEqual(51694.54);
-  });
+  // Переводим процентную ставку из диапазона от 0 до 100 в месячную ставку (доля от 1)
+  let monthlyRate = (percent / 100) / 12;
 
-  it('верно считать кредит: кейс #3', () => {
-    expect(calculateTotalMortgage(10, 20000, 20000, 48)).toEqual(0);
-  });
+  // Рассчитываем тело кредита (сумма кредита минус первоначальный взнос)
+  let loanBody = amount - contribution;
 
-  it('верно считать кредит: кейс #4', () => {
-    expect(calculateTotalMortgage(10, 0, 10000, 36)).toEqual(11616.19);
-  });
 
-  it('верно считать кредит: кейс #5', () => {
-    expect(calculateTotalMortgage(15, 0, 10000, 36)).toEqual(12479.52);
-  }); 
-});
+  // Если тело кредита меньше или равно нулю, возврат 0
+  if (loanBody <= 0) {
+    return 0;
+  }
+
+  // Рассчитываем ежемесячный платеж по формуле
+  let monthlyPayment = loanBody * (monthlyRate + (monthlyRate / (Math.pow(1 + monthlyRate, countMonths) - 1)));
+
+  // Рассчитываем общую сумму выплат
+  let totalAmount = monthlyPayment * countMonths + contribution;
+
+  // Округляем результат до двух знаков после запятой и возвращаем
+  return +totalAmount.toFixed(2);
+}
