@@ -43,3 +43,4 @@ function compareArrays(arr1, arr2) {
   console.log(getUsersNamesInAgeRange(people, "женский")); // 27.4
   console.log(getUsersNamesInAgeRange([], "женский")); // 0
   console.log(getUsersNamesInAgeRange(people, "инопланетянин")); // 0
+
